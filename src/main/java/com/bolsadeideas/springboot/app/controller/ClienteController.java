@@ -6,13 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
+@SessionAttributes("cliente")
 public class ClienteController {
 
     @Autowired
@@ -34,12 +38,26 @@ public class ClienteController {
     }
 
     @RequestMapping(value = "/form",method = RequestMethod.POST)
-    public String guardar(@Valid Cliente cliente, BindingResult result,Model model){
+    public String guardar(@Valid Cliente cliente, BindingResult result,Model model, SessionStatus status ){
         if (result.hasErrors()){
             model.addAttribute("titulo","Formulario de cliente");
             return "form";
         }
         clienteDao.save(cliente);
+        status.setComplete();
         return "redirect:listar";
+    }
+
+    @RequestMapping(value = "/form/{id}",method = RequestMethod.GET)
+    public String editar(@PathVariable(value = "id") Long id, Map<String, Object> model){
+        Cliente cliente= null;
+        if (id >0){
+            cliente=clienteDao.findOne(id);
+        } else {
+            return "redirect:/listar";
+        }
+        model.put("cliente",cliente);
+        model.put("titulo","Editar cliente");
+        return "form";
     }
 }
