@@ -1,4 +1,4 @@
-package com.bolsadeideas.springboot.app.controller;
+package com.bolsadeideas.springboot.app.controllers;
 
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
 import com.bolsadeideas.springboot.app.models.service.IClienteService;
@@ -25,7 +25,7 @@ public class ClienteController {
 
     @RequestMapping(value = "/listar",method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model){
-        Pageable pageRequest =  PageRequest.of(page,4);
+        Pageable pageRequest =  PageRequest.of(page,4); // new PageRequest
         Page<Cliente> clientes = clienteService.findAll(pageRequest);
         model.addAttribute("titulo","Listado de clientes");
         model.addAttribute("clientes",clientes);
